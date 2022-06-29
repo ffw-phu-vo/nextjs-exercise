@@ -5,21 +5,21 @@ interface ICustomCurrencyInput {
   id: string;
   className: string;
   placeholder: string;
-  // value: string;
+  value: number;
   setValue: any;
 }
 const CustomCurrencyInput = ({
   id,
   className,
   placeholder,
-  // value,
+  value,
   setValue,
 }: ICustomCurrencyInput) => {
   return (
     <CurrencyInput
       id={id}
       className={className}
-      // value={value}
+      value={value}
       placeholder={placeholder}
       prefix={"$"}
       allowDecimals={false}

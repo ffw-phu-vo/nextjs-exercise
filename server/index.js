@@ -8,6 +8,7 @@ const post = require('./data/post');
 const product = require('./data/product');
 var Chance = require('chance');
 var chance = new Chance();
+const { sort } = require('fast-sort');
 const multer  = require('multer');
 const mime = require('mime-types');
 const PORT = 5000;
@@ -41,7 +42,8 @@ const isAuth = async (req, res, next) => {
   }
 };
 
-const products = product.product();
+const products = [
+];
 
 const media = [];
 
@@ -69,29 +71,74 @@ app.get('/post', (req, res) => {
 });
 
 app.get('/product', (req, res) => {
-  res.json({ data: products})
+  const { search, priceFrom, priceTo, orderBy, isAscending } = req.query;
+  let results = products;
+  console.log('search', search);
+
+  if (search) {
+    console.log('search2', search);
+
+    results = results.filter(product => product.title.includes(search))
+  }
+  if (priceFrom > 0) {
+    results = results.filter(product => product.price >= priceFrom)
+  }
+  if (priceTo > 0) {
+    results = results.filter(product => product.price <= priceTo)
+  }
+
+  if (isAscending == 'true') {
+    results = sort(results).asc(u => u[orderBy]);
+
+  } else {
+    results = sort(results).desc(u => u[orderBy]);
+
+  }
+  
+
+  const tmp = [...results]
+  
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const slicedArray = tmp.slice((page - 1) * 10, 10 * page);
+
+
+  res.json({ data: slicedArray, total: results.length, perPage: 10 })
 });
 
-app.post('/product', (req, res) => {
+app.get('/product/:id', (req, res) => {
+  const index = products.findIndex(product => product.productId === req.params.id);
+
+  res.json({ data: products[index]})
+});
+
+app.post('/product', [upload.single('thumb'), isAuth], (req, res) => {
   const prod = {
     "productId": chance.hash({length: 15}),
+    "thumb": req.file.filename,
     "title": req.body.title,
-    "price": req.body.price,
-    "description": req.body.description
+    "price": +req.body.price,
+    "description": req.body.description,
+    "date": new Date()
   }
   products.push(prod)
   res.json({ data: prod})
 })
 
-app.put('/product/:id', (req, res) => {
+app.put('/product/:id', [upload.single('thumb'), isAuth], (req, res) => {
   const prod = {
     "productId": req.params.id,
     "title": req.body.title,
-    "price": req.body.price,
-    "description": req.body.description
+    "price": +req.body.price,
+    "description": req.body.description,
+    "date": new Date()
   }
 
   const index = products.findIndex(product => product.productId === req.params.id);
+  if (req.file && req.file.filename) {
+    prod.thumb = req.file.filename;
+  } else {
+    prod.thumb = products[index].thumb;
+  }
   products[index] = prod;
   res.json({ data: prod})
 

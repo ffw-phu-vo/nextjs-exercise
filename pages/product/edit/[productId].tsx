@@ -3,25 +3,36 @@ import React, { useEffect, useState } from "react";
 import httpClient from "../../../api/httpClient";
 import CustomCurrencyInput from "../../../components/CustomCurrencyInput/CustomCurrencyInput";
 
-const ProductEdit = () => {
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
-  const [description, setDescription] = useState("");
+const ProductEdit = (props: any) => {
+  const handleType = props.data?.productId ? 'update' : 'create';
+  const [title, setTitle] = useState(props.data?.title ? props.data.title : '');
+  const [price, setPrice] = useState(props.data?.price ? props.data.price : '');
+  const [thumb, setThumb] = useState<any>("");
+  const [description, setDescription] = useState(props.data?.description ? props.data.description : '');
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log({title, price , thumbnail, description});
-    httpClient.post("/product", { title, price, description })
-      .then(res => {
-        const productId = res.data.productId;
-        router.push(`/product/edit/${productId}`)
-      });
+    // console.log({title, price , thumb, description});
+
+    if (title && price && thumb && description) {
+      console.log({thumb, title, price, description});
+      // const formData = new FormData();
+      // formData.append('title', title);
+      // formData.append('price', price);
+      // formData.append('thumb', thumb);
+      // formData.append('description', description);
+      // httpClient.post("/product", formData)
+      //   .then(res => {
+      //     // console.log('finish', res.data);
+      //     const productId = res.data.data.productId;
+      //     router.push(`/product/edit/${productId}`)
+      //   });
+    }
   };
 
   const onThumbnailChange = (e: any) => {
     if (e.target.files && e.target.files[0]) {
-      setThumbnail(e.target.files[0]);
+      setThumb(e.target.files[0]);
     }
   }
 
@@ -43,6 +54,7 @@ const ProductEdit = () => {
             id="product-price-input"
             className=""
             placeholder="Product Price"
+            value={price}
             setValue={setPrice}
           />
         </div>
@@ -67,7 +79,7 @@ const ProductEdit = () => {
             className="btn"
             type="submit"
           >
-            Create Product
+            {handleType} Product
           </button>
         </div>
       </div>
@@ -76,18 +88,18 @@ const ProductEdit = () => {
 };
 
 export async function getServerSideProps({params}: {params: any}) {
-  console.log(params);
   const productId = params?.productId;
   let dataPayload:any = [];
 
-  if (productId) {
-    dataPayload = await httpClient.get(`/product?productId=${productId}`);
+  if (productId != 0) {
+    dataPayload = await httpClient.get(`/product/${productId}`);
   }
-  console.log(dataPayload.data);
+
+  console.log(dataPayload?.data?.data);
 
   return {
     props: {
-      data: dataPayload?.data
+      data: dataPayload?.data?.data ? dataPayload?.data?.data : dataPayload
     }, // will be passed to the page component as props
   }
 }
