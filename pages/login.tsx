@@ -13,7 +13,7 @@ const login = () => {
         console.log(res.data)
         setStorage('my-token', res.data.token);
         setStorage('my-refresh-token', res.data.refresh_token);
-        router.push('/')
+        router.push('/product')
       });
   }
 

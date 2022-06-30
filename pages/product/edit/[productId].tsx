@@ -1,89 +1,126 @@
 import router from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import httpClient from "../../../api/httpClient";
 import CustomCurrencyInput from "../../../components/CustomCurrencyInput/CustomCurrencyInput";
+import Image from 'next/future/image';
 
 const ProductEdit = (props: any) => {
-  const handleType = props.data?.productId ? 'update' : 'create';
-  const [title, setTitle] = useState(props.data?.title ? props.data.title : '');
-  const [price, setPrice] = useState(props.data?.price ? props.data.price : '');
-  const [thumb, setThumb] = useState<any>("");
-  const [description, setDescription] = useState(props.data?.description ? props.data.description : '');
+  const {productId, data} = props;
+  const handleType = productId != 0 ? 'update' : 'create';
+  const [titleF, setTitleF] = useState(data?.title ? data.title : '');
+  const [priceF, setPriceF] = useState(data?.price ? data.price : '');
+  const thumbUrlF = data?.thumb ? data.thumb : '';
+  const [thumbF, setThumbF] = useState<any>('');
+  const [descriptionF, setDescriptionF] = useState(data?.description ? data.description : '');
 
   const handleSubmit = (e: any) => {
-    e.preventDefault();
     // console.log({title, price , thumb, description});
-
-    if (title && price && thumb && description) {
-      console.log({thumb, title, price, description});
-      // const formData = new FormData();
-      // formData.append('title', title);
-      // formData.append('price', price);
-      // formData.append('thumb', thumb);
-      // formData.append('description', description);
-      // httpClient.post("/product", formData)
-      //   .then(res => {
-      //     // console.log('finish', res.data);
-      //     const productId = res.data.data.productId;
-      //     router.push(`/product/edit/${productId}`)
-      //   });
+    const formData = new FormData();
+    formData.append('title', titleF);
+    formData.append('price', priceF);
+    if(thumbF) {
+      formData.append('thumb', thumbF);
     }
+    formData.append('description', descriptionF);
+
+    switch(handleType) {
+      case 'create':
+        httpClient.post(`/product`, formData)
+          .then(res => {
+            // console.log('finish', res.data);
+            // console.log('finish', res.data.data.productId);
+            router.push(`/product/edit/${res.data.data.productId}`)
+          });
+        break;
+      case 'update':
+        httpClient.put(`/product/${productId}`, formData)
+          .then(res => {
+            // console.log('finish', res.data);
+            // router.push(`/product/${productId}`)
+          });
+        break;
+    }
+
   };
+
+  const handleDelete = () => {
+    httpClient.delete(`/product/${productId}`)
+      .then(res => {
+        // console.log('finish', res.data);
+        router.push(`/product`)
+      });
+  }
 
   const onThumbnailChange = (e: any) => {
     if (e.target.files && e.target.files[0]) {
-      setThumb(e.target.files[0]);
+      setThumbF(e.target.files[0]);
     }
   }
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <div className="product-edit container mx-auto">
-        <div className="my-2">
-          <label className="block">Product Name:</label>
-          <input
-            type="text"
-            value={title}
-            placeholder="Product Name"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className="my-2">
-          <label className="block">Product Price:</label>
-          <CustomCurrencyInput
-            id="product-price-input"
-            className=""
-            placeholder="Product Price"
-            value={price}
-            setValue={setPrice}
-          />
-        </div>
-        <div className="my-2">
-          <label className="block">Product Thumbnail:</label>
-          <input
-            type="file"
-            onChange={(e) => onThumbnailChange(e)}
-          />
-        </div>
-        <div className="my-2">
-          <label className="block">Product description:</label>
-          <textarea
-            rows={4}
-            cols={50}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="my-4">
+    <div className="product-edit container mx-auto">
+      <div className="my-2">
+        <label className="block">Product Name:</label>
+        <input
+          type="text"
+          value={titleF}
+          placeholder="Product Name"
+          onChange={(e) => setTitleF(e.target.value)}
+        />
+      </div>
+      <div className="my-2">
+        <label className="block">Product Price:</label>
+        <CustomCurrencyInput
+          id="product-price-input"
+          className=""
+          placeholder="Product Price"
+          value={priceF}
+          setValue={setPriceF}
+        />
+      </div>
+      <div className="my-2">
+        <label className="block">Product Thumbnail:</label>
+
+        {thumbUrlF &&
+          <div className="w-3/12">
+             <Image
+                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${thumbUrlF}`}
+                alt={`image ${titleF}`}
+              />
+          </div>
+        }
+        <input
+          type="file"
+          accept=".jpg, .jpeg, .png"
+          onChange={(e) => onThumbnailChange(e)}
+        />
+      </div>
+      <div className="my-2">
+        <label className="block">Product description:</label>
+        <textarea
+          rows={4}
+          cols={50}
+          value={descriptionF}
+          onChange={(e) => setDescriptionF(e.target.value)}
+        />
+      </div>
+      <div className="my-4">
+        <button
+          className="btn mr-2"
+          onClick={(e) => handleSubmit(e)}
+        >
+          {handleType} Product
+        </button>
+        {handleType == "update" && (
           <button
             className="btn"
-            type="submit"
+            onClick={handleDelete}
           >
-            {handleType} Product
+            Delete Product
           </button>
-        </div>
+        )}
       </div>
-    </form>
+    </div>
   );
 };
 
@@ -93,13 +130,21 @@ export async function getServerSideProps({params}: {params: any}) {
 
   if (productId != 0) {
     dataPayload = await httpClient.get(`/product/${productId}`);
-  }
 
-  console.log(dataPayload?.data?.data);
+    if(!dataPayload?.data?.data) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/product",
+        }
+      };
+    }
+  }
 
   return {
     props: {
-      data: dataPayload?.data?.data ? dataPayload?.data?.data : dataPayload
+      data: dataPayload?.data?.data ? dataPayload?.data?.data : dataPayload,
+      productId: productId,
     }, // will be passed to the page component as props
   }
 }
