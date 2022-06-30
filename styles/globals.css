@@ -12,6 +12,17 @@
   a {
     @apply text-blue-600 underline;
   }
+  table {
+    @apply border table-auto w-full text-sm border-slate-400;
+  }
+
+  th {
+    @apply border border-slate-300 p-2;
+  }
+
+  td {
+    @apply border border-slate-300 p-2;
+  }
 }
 
 textarea,

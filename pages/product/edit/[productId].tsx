@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import httpClient from "../../../api/httpClient";
 import CustomCurrencyInput from "../../../components/CustomCurrencyInput/CustomCurrencyInput";
 import Image from 'next/future/image';
+import Link from "next/link";
 
 const ProductEdit = (props: any) => {
   const {productId, data} = props;
@@ -80,7 +81,6 @@ const ProductEdit = (props: any) => {
       </div>
       <div className="my-2">
         <label className="block">Product Thumbnail:</label>
-
         {thumbUrlF &&
           <div className="w-3/12">
              <Image
@@ -119,6 +119,9 @@ const ProductEdit = (props: any) => {
             Delete Product
           </button>
         )}
+        <Link href="/product">
+          <a>Back to list</a>
+        </Link>
       </div>
     </div>
   );

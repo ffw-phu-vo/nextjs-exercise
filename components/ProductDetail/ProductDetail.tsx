@@ -20,7 +20,7 @@ const ProductDetail = ({
 }: IProductDetail) => {
   return (
     <div className="product-detail mx-auto container py-5">
-      <div className="flex flex-nowrap">
+      <div className="flex flex-wrap">
         <div className="w-4/12">
           <Image
             src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${thumb}`}
