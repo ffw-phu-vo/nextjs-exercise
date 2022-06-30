@@ -1,6 +1,6 @@
 import React from "react";
 import Image from 'next/future/image';
-import ProductCart from "../ProductCart/ProductCart";
+import CartButton from "../CartButton/CartButton";
 import { formatDollar } from "../../helper/format";
 
 interface IProductDetail {
@@ -30,8 +30,9 @@ const ProductDetail = ({
         <div className="w-8/12 pl-8">
           <h1 className="mb-4">{title}</h1>
           <div className="my-4">{formatDollar(price)}</div>
-          <ProductCart
+          <CartButton
             productId={productId}
+            title={title}
             price={price}
           />
           <div className="my-4" dangerouslySetInnerHTML={{ __html: description }} />

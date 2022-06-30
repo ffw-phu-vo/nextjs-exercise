@@ -1,9 +1,12 @@
 import React from 'react'
 import httpClient from '../api/httpClient';
+import CartTeaser from '../components/CartTeaser/CartTeaser';
 
 const product = () => {
   return (
-    <div>product</div>
+    <div className='product-list'>
+      <CartTeaser />
+    </div>
   )
 }
 

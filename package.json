@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.3",
     "axios": "^0.27.2",
     "axios-auth-refresh": "^3.3.1",
     "chance": "^1.1.8",
@@ -19,7 +20,9 @@
     "rand-token": "^1.0.1",
     "react": "18.1.0",
     "react-currency-input-field": "^3.6.4",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-redux": "^8.0.2",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "17.0.35",
