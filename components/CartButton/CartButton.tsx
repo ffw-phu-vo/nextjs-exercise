@@ -3,11 +3,13 @@ import { useDispatch } from 'react-redux';
 import { addProduct } from '../../store/reducers/cart';
 
 export interface ICartButton {
+  className?: string;
   productId: string;
   title: string;
   price: number;
+  children?: JSX.Element | string;
 }
-const CartButton = ({productId, title, price}:ICartButton) => {
+const CartButton = ({className, productId, title, price, children}:ICartButton) => {
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
@@ -23,7 +25,7 @@ const CartButton = ({productId, title, price}:ICartButton) => {
 
   return (
     <div>
-      <button className='btn' onClick={handleAddToCart}>Add to cart</button>
+      <button className={className} onClick={handleAddToCart}>{children}</button>
     </div>
   )
 }

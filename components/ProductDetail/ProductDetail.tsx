@@ -37,10 +37,13 @@ const ProductDetail = ({
           <h1 className="mb-4">{title}</h1>
           <div className="my-4">{formatDollar(price)}</div>
           <CartButton
+            className={'btn'}
             productId={productId}
             title={title}
             price={price}
-          />
+          >
+            Add to cart
+          </CartButton>
           <div className="my-4" dangerouslySetInnerHTML={{ __html: description }} />
         </div>
       </div>

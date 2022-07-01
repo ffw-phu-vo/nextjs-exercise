@@ -25,6 +25,10 @@
   }
 }
 
+.link {
+  @apply text-blue-600 underline;
+}
+
 textarea,
 input[type="text"],
 input[type="password"] {
