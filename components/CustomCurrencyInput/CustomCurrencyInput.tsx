@@ -6,14 +6,14 @@ interface ICustomCurrencyInput {
   className: string;
   placeholder: string;
   value: number;
-  setValue: any;
+  onValueChange: any;
 }
 const CustomCurrencyInput = ({
   id,
   className,
   placeholder,
   value,
-  setValue,
+  onValueChange,
 }: ICustomCurrencyInput) => {
   return (
     <CurrencyInput
@@ -23,7 +23,8 @@ const CustomCurrencyInput = ({
       placeholder={placeholder}
       prefix={"$"}
       allowDecimals={false}
-      onValueChange={(value) => setValue(value)}
+      // onValueChange={(value) => setValue(value)}
+      onValueChange={onValueChange}
     />
   );
 };

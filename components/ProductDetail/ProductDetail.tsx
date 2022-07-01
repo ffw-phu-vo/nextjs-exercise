@@ -2,6 +2,8 @@ import React from "react";
 import Image from 'next/future/image';
 import CartButton from "../CartButton/CartButton";
 import { formatDollar } from "../../helper/format";
+import Link from "next/link";
+import CartTeaser from "../CartTeaser/CartTeaser";
 
 interface IProductDetail {
   productId: string;
@@ -20,6 +22,10 @@ const ProductDetail = ({
 }: IProductDetail) => {
   return (
     <div className="product-detail mx-auto container py-5">
+      <Link href="/product">
+        <a>Back to list</a>
+      </Link>
+      <CartTeaser />
       <div className="flex flex-wrap">
         <div className="w-4/12">
           <Image

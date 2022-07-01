@@ -37,7 +37,7 @@ const ProductEdit = (props: any) => {
         httpClient.put(`/product/${productId}`, formData)
           .then(res => {
             // console.log('finish', res.data);
-            // router.push(`/product/${productId}`)
+            router.push(`/product/${productId}`)
           });
         break;
     }
@@ -76,7 +76,7 @@ const ProductEdit = (props: any) => {
           className=""
           placeholder="Product Price"
           value={priceF}
-          setValue={setPriceF}
+          onValueChange={(value:number) => setPriceF(value)}
         />
       </div>
       <div className="my-2">

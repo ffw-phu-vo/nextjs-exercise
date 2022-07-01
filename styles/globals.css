@@ -39,5 +39,9 @@ input[type="password"] {
   @apply opacity-50;
 }
 
+.btn:disabled {
+  @apply cursor-not-allowed opacity-100 bg-slate-300;
+}
+
 @tailwind components;
 @tailwind utilities;
