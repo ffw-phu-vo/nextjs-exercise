@@ -6,7 +6,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^34.2.0",
+    "@ckeditor/ckeditor5-react": "^5.0.2",
     "@reduxjs/toolkit": "^1.8.3",
+    "@types/ckeditor__ckeditor5-build-classic": "^29.0.1",
     "axios": "^0.27.2",
     "axios-auth-refresh": "^3.3.1",
     "chance": "^1.1.8",
@@ -15,6 +18,7 @@
     "express": "^4.18.1",
     "fast-sort": "^3.2.0",
     "jsonwebtoken": "^8.5.1",
+    "mime-types": "^2.1.35",
     "multer": "^1.4.5-lts.1",
     "next": "latest",
     "rand-token": "^1.0.1",

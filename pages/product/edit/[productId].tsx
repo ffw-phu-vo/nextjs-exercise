@@ -4,6 +4,7 @@ import httpClient from "../../../api/httpClient";
 import CustomCurrencyInput from "../../../components/CustomCurrencyInput/CustomCurrencyInput";
 import Image from 'next/future/image';
 import Link from "next/link";
+import CustomEditor from "../../../components/CustomEditor/CustomEditor";
 
 const ProductEdit = (props: any) => {
   const {productId, data} = props;
@@ -97,12 +98,13 @@ const ProductEdit = (props: any) => {
       </div>
       <div className="my-2">
         <label className="block">Product description:</label>
-        <textarea
+        {/* <textarea
           rows={4}
           cols={50}
           value={descriptionF}
           onChange={(e) => setDescriptionF(e.target.value)}
-        />
+        /> */}
+        <CustomEditor onChange={setDescriptionF}/>
       </div>
       <div className="my-4">
         <button

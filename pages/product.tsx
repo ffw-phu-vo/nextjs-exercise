@@ -130,7 +130,7 @@ const ProductList = (prod: any) => {
               <th>Action</th>
             </tr>
           </thead>
-          {data && (
+          {data.length > 0 && (
             <tbody>
               {data.map((item:any, index:number) => {
                 return (
@@ -189,15 +189,17 @@ const ProductList = (prod: any) => {
           )}
         </table>
       </div>
-      <div className='product-list__pager m-5'>
-        Pager
-        <button onClick={handleTest}>test</button>
-        <Pager
-          currentPage={currentPage}
-          totalPage={totalPage}
-          onClick={handleProductQuery}
-        />
-      </div>
+      {data.length > 0 && (
+        <div className='product-list__pager m-5'>
+          Pager
+          <button onClick={handleTest}>test</button>
+          <Pager
+            currentPage={currentPage}
+            totalPage={totalPage}
+            onClick={handleProductQuery}
+          />
+        </div>
+      )}
     </div>
   )
 }
