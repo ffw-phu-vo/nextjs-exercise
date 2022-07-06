@@ -19,15 +19,26 @@ const ProductList = (prod: any) => {
   const query = prod.query;
   const totalPage = Math.ceil(total / perPage);
   const currentPage = prod.currentPage;
-  const arrowAsc = query.isAscending == 'true' ? '&#160;&#8593;' : '&#160;&#8595;'
-  const [deleteId , setDeleteId] = useState(null);
+  const arrowAsc = query.isAscending == 'true' ? '&#160;&#8593;' : '&#160;&#8595;';
+  const tableColumns = ProductTableColumns.map(item =>
+    item.id === `product_${query.orderBy}`
+      ? {
+          ...item,
+          ...query.isAscending && {arrowAsc: arrowAsc}
+        }
+      : item
+  );
 
   const handleTest = () => {
     // console.log(prod.query);
     // const query = handleQuery(prod.query, {page: '2'});
     // console.log(query);
     router.replace({
-      query: {...prod.query, page: '2'},
+      query: {
+        ...prod.query,
+        orderBy: 'title',
+        isAscending: query.isAscending == 'true' ? false : true,
+      },
     });
   }
 
@@ -66,8 +77,26 @@ const ProductList = (prod: any) => {
         router.push(`/product/edit/${productId}`)
         break;
       case OnClickButton.DELETE_PRODUCT:
-        setDeleteId(productId)
+
         break;
+      case OnClickButton.ORDER_BY_TITLE:
+        router.replace({
+          query: {
+            ...prod.query,
+            orderBy: 'title',
+            isAscending: query.isAscending == 'true' ? false : true,
+          },
+        });
+        break;
+      case OnClickButton.ORDER_BY_PRICE:
+          router.replace({
+            query: {
+              ...prod.query,
+              orderBy: 'price',
+              isAscending: query.isAscending == 'true' ? false : true,
+            },
+          });
+          break;
     }
   }
 
@@ -119,7 +148,7 @@ const ProductList = (prod: any) => {
         <>
           <div className='product-list__list m-5'>
             <CustomTable
-              columns={ProductTableColumns}
+              columns={tableColumns}
               data={data}
               onClick={handleOnClickButton}
             />

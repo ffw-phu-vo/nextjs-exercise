@@ -6,6 +6,11 @@ export interface ICustomTableColumn {
   id: string;
   label: string;
   sortable?: boolean;
+  arrowAsc?:string;
+  renderSortable?: (
+    column: any,
+    onClick?: OnClickType,
+  ) => ReactElement;
   className?: string;
   render: (
     value: any,
@@ -28,7 +33,12 @@ const CustomTable = ({columns, data, onClick}:ICustomTable) => {
             {columns.map((column) => {
               return (
                 <th key={`heading_${column.id}`}>
-                  {column.label}
+                  {(column.sortable && column.renderSortable) ? (
+                    <>{column.renderSortable(column, onClick)}</>
+                  ) : (
+                    <span>{column.label}</span>
+                  )}
+
                 </th>
               )
             })}

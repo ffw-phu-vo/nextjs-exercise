@@ -32,19 +32,40 @@ export const ProductTableColumns: ICustomTableColumn[] = [
     ),
   },
   {
-    id: "product_name",
+    id: "product_title",
     label: "Name",
     render: (product: any) => (
       <p className="font-bold text-lg">
         <Link href={`/product/${product.productId}`}>{product.title}</Link>
       </p>
     ),
-    sortable: true
+    sortable: true,
+    renderSortable: (column: any, onClick?: OnClickType) => (
+      <>
+        <button
+          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_TITLE, column.id)}
+          className=""
+        >
+          {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
+        </button>
+      </>
+    )
   },
   {
     id: "product_price",
     label: "Price",
     render: (product: any) => <>{formatDollar(product.price)}</>,
+    sortable: true,
+    renderSortable: (column: any, onClick?: OnClickType) => (
+      <>
+        <button
+          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_TITLE, column.id)}
+          className=""
+        >
+          {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
+        </button>
+      </>
+    )
   },
   {
     id: "product_date",
