@@ -11,7 +11,7 @@ interface IEditorRef {
 }
 
 interface ICustomEditor {
-  onChange: any
+  onChange: (editor:any) => void
 }
 
 // https://www.techgalery.com/2021/05/how-to-use-react-ckeditor-upload-file.html

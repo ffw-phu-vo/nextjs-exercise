@@ -77,7 +77,7 @@ const ProductEdit = (props: any) => {
           className=""
           placeholder="Product Price"
           value={priceF}
-          onValueChange={(value:number) => setPriceF(value)}
+          onValueChange={(value) => setPriceF(value)}
         />
       </div>
       <div className="my-2">
