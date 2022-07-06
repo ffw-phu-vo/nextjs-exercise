@@ -9,6 +9,7 @@ export enum OnClickButton {
   DELETE_PRODUCT = "delete_product",
   ORDER_BY_TITLE = "order_by_name",
   ORDER_BY_PRICE = "order_by_price",
+  ORDER_BY_DATE = "order_by_date",
 }
 
 export const ProductTableColumns: ICustomTableColumn[] = [
@@ -59,7 +60,7 @@ export const ProductTableColumns: ICustomTableColumn[] = [
     renderSortable: (column: any, onClick?: OnClickType) => (
       <>
         <button
-          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_TITLE, column.id)}
+          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_PRICE, column.id)}
           className=""
         >
           {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
@@ -71,6 +72,17 @@ export const ProductTableColumns: ICustomTableColumn[] = [
     id: "product_date",
     label: "Updated At",
     render: (product: any) => <>{formatCustomDate(product.date)}</>,
+    sortable: true,
+    renderSortable: (column: any, onClick?: OnClickType) => (
+      <>
+        <button
+          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_DATE, column.id)}
+          className=""
+        >
+          {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
+        </button>
+      </>
+    )
   },
   {
     id: "product_action",

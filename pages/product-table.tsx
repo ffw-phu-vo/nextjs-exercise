@@ -16,6 +16,7 @@ import CustomPopup from '../components/CustomPopup/CustomPopup';
 const ProductList = (prod: any) => {
   const router = useRouter();
   const { data , total , perPage} = prod.data;
+  const dispatch = useDispatch();
   const query = prod.query;
   const totalPage = Math.ceil(total / perPage);
   const currentPage = prod.currentPage;
@@ -58,8 +59,6 @@ const ProductList = (prod: any) => {
     });
   }
 
-  const dispatch = useDispatch();
-
   const handleOnClickButton = (type: string, value: any) => {
     console.log(type, value);
     const {productId, title, price} = value;
@@ -80,22 +79,22 @@ const ProductList = (prod: any) => {
 
         break;
       case OnClickButton.ORDER_BY_TITLE:
-        router.replace({
-          query: {
-            ...prod.query,
-            orderBy: 'title',
-            isAscending: query.isAscending == 'true' ? false : true,
-          },
+        handleProductQuery({
+          orderBy: 'title',
+          isAscending: query.isAscending == 'true' ? false : true,
         });
         break;
       case OnClickButton.ORDER_BY_PRICE:
-          router.replace({
-            query: {
-              ...prod.query,
-              orderBy: 'price',
-              isAscending: query.isAscending == 'true' ? false : true,
-            },
-          });
+        handleProductQuery({
+          orderBy: 'price',
+          isAscending: query.isAscending == 'true' ? false : true,
+        })
+        break;
+        case OnClickButton.ORDER_BY_DATE:
+          handleProductQuery({
+            orderBy: 'date',
+            isAscending: query.isAscending == 'true' ? false : true,
+          })
           break;
     }
   }
@@ -143,7 +142,6 @@ const ProductList = (prod: any) => {
           </div>
         </div>
       </div>
-
       {data.length > 0 && (
         <>
           <div className='product-list__list m-5'>
