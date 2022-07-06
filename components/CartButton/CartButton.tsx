@@ -11,6 +11,7 @@ export interface ICartButton {
 }
 const CartButton = ({className, productId, title, price, children}:ICartButton) => {
   const dispatch = useDispatch();
+  console.log('test');
 
   const handleAddToCart = () => {
     dispatch(
