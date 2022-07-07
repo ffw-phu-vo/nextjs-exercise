@@ -1,31 +1,45 @@
 import Link from 'next/link';
 import React, { useState } from 'react'
-import Image from 'next/future/image';
 import httpClient from '../api/httpClient';
 import CartTeaser from '../components/CartTeaser/CartTeaser';
-import { formatCustomDate, formatDollar } from '../helper/format';
 import { useRouter } from 'next/router';
 import Pager from '../components/Pager/Pager';
 import { handleQuery } from '../helper/handleQuery';
 import CustomCurrencyInput from '../components/CustomCurrencyInput/CustomCurrencyInput';
-import CartButton from '../components/CartButton/CartButton';
+import CustomTable from '../components/CustomTable/CustomTable';
+import { OnClickButton, ProductTableColumns } from '../helper/productTableColumns';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../store/reducers/cart';
 import CustomPopup from '../components/CustomPopup/CustomPopup';
 
 
 const ProductList = (prod: any) => {
   const router = useRouter();
   const { data , total , perPage} = prod.data;
+  const dispatch = useDispatch();
   const query = prod.query;
   const totalPage = Math.ceil(total / perPage);
   const currentPage = prod.currentPage;
-  const arrowAsc = query.isAscending == 'true' ? '&#160;&#8593;' : '&#160;&#8595;'
+  const arrowAsc = query.isAscending == 'true' ? '&#160;&#8593;' : '&#160;&#8595;';
+  const tableColumns = ProductTableColumns.map(item =>
+    item.id === `product_${query.orderBy}`
+      ? {
+          ...item,
+          ...query.isAscending && {arrowAsc: arrowAsc}
+        }
+      : item
+  );
 
   const handleTest = () => {
     // console.log(prod.query);
     // const query = handleQuery(prod.query, {page: '2'});
     // console.log(query);
     router.replace({
-      query: {...prod.query, page: '2'},
+      query: {
+        ...prod.query,
+        orderBy: 'title',
+        isAscending: query.isAscending == 'true' ? false : true,
+      },
     });
   }
 
@@ -43,6 +57,46 @@ const ProductList = (prod: any) => {
     router.replace({
       query: {...updateQuery},
     });
+  }
+
+  const handleOnClickButton = (type: string, value: any) => {
+    console.log(type, value);
+    const {productId, title, price} = value;
+    switch(type) {
+      case OnClickButton.ADD_TO_CART:
+        dispatch(
+          addProduct({
+            productId,
+            title,
+            price,
+          })
+        );
+        break;
+      case OnClickButton.EDIT_PRODUCT:
+        router.push(`/product/edit/${productId}`)
+        break;
+      case OnClickButton.DELETE_PRODUCT:
+
+        break;
+      case OnClickButton.ORDER_BY_TITLE:
+        handleProductQuery({
+          orderBy: 'title',
+          isAscending: query.isAscending == 'true' ? false : true,
+        });
+        break;
+      case OnClickButton.ORDER_BY_PRICE:
+        handleProductQuery({
+          orderBy: 'price',
+          isAscending: query.isAscending == 'true' ? false : true,
+        })
+        break;
+        case OnClickButton.ORDER_BY_DATE:
+          handleProductQuery({
+            orderBy: 'date',
+            isAscending: query.isAscending == 'true' ? false : true,
+          })
+          break;
+    }
   }
 
   return (
@@ -88,113 +142,25 @@ const ProductList = (prod: any) => {
           </div>
         </div>
       </div>
-      <div className='product-list__list m-5'>
-        <table>
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Image</th>
-              <th>
-                <button
-                  onClick={()=>handleProductQuery({
-                    orderBy: 'title',
-                    isAscending: query.isAscending == 'true' ? false : true,
-                  })}
-                >
-                  Name
-                  {query.orderBy == 'title' && <span dangerouslySetInnerHTML={{ __html: arrowAsc }} />}
-                </button>
-              </th>
-              <th>
-                <button
-                  onClick={()=>handleProductQuery({
-                    orderBy: 'price',
-                    isAscending: query.isAscending == 'true' ? false : true,
-                  })}
-                >
-                  Price
-                  {query.orderBy == 'price' && <span dangerouslySetInnerHTML={{ __html: arrowAsc }} />}
-                </button>
-              </th>
-              <th>
-                <button
-                  onClick={()=>handleProductQuery({
-                    orderBy: 'date',
-                    isAscending: query.isAscending == 'true' ? false : true,
-                  })}
-                >
-                  Date
-                  {query.orderBy == 'date' && <span dangerouslySetInnerHTML={{ __html: arrowAsc }} />}
-                </button>
-              </th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          {data.length > 0 && (
-            <tbody>
-              {data.map((item:any, index:number) => {
-                return (
-                  <tr key={`table-${index}`}>
-                    <td>{index + 1 + (currentPage - 1) * perPage}</td>
-                    <td>
-                      <div className='w-52'>
-                        <Image
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.thumb}`}
-                          alt={`image ${item.title}`}
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      <Link href={`/product/${item.productId}`}>
-                        <a>{item.title}</a>
-                      </Link>
-                    </td>
-                    <td>{formatDollar(item.price)}</td>
-                    <td>{formatCustomDate(item.date)}</td>
-                    <td>
-                      <CartButton
-                        className='link'
-                        productId={item.productId}
-                        title={item.title}
-                        price={item.price}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                        </svg>
-                      </CartButton>
-                      <Link href={`/product/edit/${item.productId}`}>
-                        <a>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                          </svg>
-                        </a>
-                      </Link>
-                      <CustomPopup
-                        button={<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>}
-                        onConfirm={() => handleDeleteOnProduct(item.productId)}
-                      >
-                        <div>test</div>
-                      </CustomPopup>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          )}
-        </table>
-      </div>
       {data.length > 0 && (
-        <div className='product-list__pager m-5'>
-          Pager
-          <button onClick={handleTest}>test</button>
-          <Pager
-            currentPage={currentPage}
-            totalPage={totalPage}
-            onClick={handleProductQuery}
-          />
-        </div>
+        <>
+          <div className='product-list__list m-5'>
+            <CustomTable
+              columns={tableColumns}
+              data={data}
+              onClick={handleOnClickButton}
+            />
+          </div>
+          <div className='product-list__pager m-5'>
+            Pager
+            <button onClick={handleTest}>test</button>
+            <Pager
+              currentPage={currentPage}
+              totalPage={totalPage}
+              onClick={handleProductQuery}
+            />
+          </div>
+        </>
       )}
     </div>
   )
