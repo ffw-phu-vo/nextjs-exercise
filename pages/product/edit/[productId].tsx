@@ -1,10 +1,11 @@
 import router from "next/router";
 import React, { useState } from "react";
-import httpClient from "../../../api/httpClient";
+// import httpClient from "../../../api/httpClient";
 import CustomCurrencyInput from "../../../components/CustomCurrencyInput/CustomCurrencyInput";
 import Image from 'next/future/image';
 import Link from "next/link";
 import CustomEditor from "../../../components/CustomEditor/CustomEditor";
+import productApi from "../../../api/productApi";
 
 const ProductEdit = (props: any) => {
   const {productId, data} = props;
@@ -27,30 +28,28 @@ const ProductEdit = (props: any) => {
 
     switch(handleType) {
       case 'create':
-        httpClient.post(`/product`, formData)
-          .then(res => {
-            // console.log('finish', res.data);
-            // console.log('finish', res.data.data.productId);
-            router.push(`/product/edit/${res.data.data.productId}`)
-          });
+        productApi.create(formData);
+        // httpClient.post(`/product`, formData)
+        //   .then(res => {
+        //     // console.log('finish', res.data);
+        //     // console.log('finish', res.data.data.productId);
+        //     router.push(`/product/edit/${res.data.data.productId}`)
+        //   });
         break;
       case 'update':
-        httpClient.put(`/product/${productId}`, formData)
-          .then(res => {
-            // console.log('finish', res.data);
-            router.push(`/product/${productId}`)
-          });
+        productApi.update(productId, formData);
+        // httpClient.put(`/product/${productId}`, formData)
+        //   .then(res => {
+        //     // console.log('finish', res.data);
+        //     router.push(`/product/${productId}`)
+        //   });
         break;
     }
 
   };
 
   const handleDelete = () => {
-    httpClient.delete(`/product/${productId}`)
-      .then(res => {
-        // console.log('finish', res.data);
-        router.push(`/product`)
-      });
+    productApi.delete(productId);
   }
 
   const onThumbnailChange = (e: any) => {
@@ -134,7 +133,7 @@ export async function getServerSideProps({params}: {params: any}) {
   let dataPayload:any = [];
 
   if (productId != 0) {
-    dataPayload = await httpClient.get(`/product/${productId}`);
+    dataPayload = await productApi.get(productId);
 
     if(!dataPayload?.data?.data) {
       return {

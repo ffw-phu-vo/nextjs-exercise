@@ -1,5 +1,5 @@
 import React from 'react'
-import httpClient from '../../api/httpClient';
+import productApi from '../../api/productApi';
 import ProductDetail from '../../components/ProductDetail/ProductDetail';
 
 const Product = (props:any) => {
@@ -15,7 +15,7 @@ export async function getServerSideProps({params}: {params: any}) {
   const productId = params?.productId;
   let dataPayload:any = [];
 
-  dataPayload = await httpClient.get(`/product/${productId}`);
+  dataPayload = await productApi.get(productId);
 
   if(!dataPayload?.data?.data) {
     return {

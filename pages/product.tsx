@@ -11,6 +11,7 @@ import { OnClickButton, ProductTableColumns } from '../helper/productTableColumn
 import { useDispatch } from 'react-redux';
 import { addProduct } from '../store/reducers/cart';
 import CustomPopup from '../components/CustomPopup/CustomPopup';
+import productApi, { IProductQuery } from '../api/productApi';
 
 
 const ProductList = (prod: any) => {
@@ -44,12 +45,13 @@ const ProductList = (prod: any) => {
   }
 
   const handleDeleteOnProduct = (productId: number) => {
-    httpClient.delete(`/product/${productId}`)
-      .then(res => {
-        // console.log('finish', res.data);
-        // router.push(`/product`)
-        router.replace(router.asPath)
-      });
+    productApi.delete(productId);
+    // httpClient.delete(`/product/${productId}`)
+    //   .then(res => {
+    //     // console.log('finish', res.data);
+    //     // router.push(`/product`)
+    //     router.replace(router.asPath)
+    //   });
   }
 
   const handleProductQuery = (property:object) => {
@@ -166,7 +168,7 @@ const ProductList = (prod: any) => {
   )
 }
 
-export async function getServerSideProps({ query }: {query: any}) {
+export async function getServerSideProps({ query }: {query: IProductQuery | undefined}) {
   if (query
     && Object.keys(query).length === 0
     && Object.getPrototypeOf(query) === Object.prototype
@@ -181,8 +183,9 @@ export async function getServerSideProps({ query }: {query: any}) {
     }
   }
   // console.log(query);
-  const result = '?' + new URLSearchParams(query).toString();
-  const dataPayload = await httpClient.get(`/product${result}`);
+  // const result = '?' + new URLSearchParams(query).toString();
+  // const dataPayload = await httpClient.get(`/product${result}`);
+  const dataPayload = await productApi.filter(query);
 
   // console.log(dataPayload?.data);
 
@@ -190,7 +193,7 @@ export async function getServerSideProps({ query }: {query: any}) {
     props: {
       data: dataPayload?.data,
       query: query,
-      currentPage: Number(query.page),
+      currentPage: query?.page ? Number(query?.page) : 1,
     }, // will be passed to the page component as props
   }
 }
