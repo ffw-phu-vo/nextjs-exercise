@@ -9,4 +9,4 @@ node ./server/index.js
 
 ## Note
 - /product : build simple tables
-- /product-v2 : use CustomTable with idea scalable in future, define table types . Currently Delete function have not worked , I will fix later
+- /product-v2 : use CustomTable with idea scalable in future, define table types.
