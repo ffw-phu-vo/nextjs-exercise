@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement } from "react";
 
 export type OnClickType = (type: string, value: any) => void;
 
@@ -6,16 +6,10 @@ export interface ICustomTableColumn {
   id: string;
   label: string;
   sortable?: boolean;
-  arrowAsc?:string;
-  renderSortable?: (
-    column: any,
-    onClick?: OnClickType,
-  ) => ReactElement;
+  arrowAsc?: string;
+  renderSortable?: (column: any, onClick?: OnClickType) => ReactElement;
   className?: string;
-  render: (
-    value: any,
-    onClick?: OnClickType
-  ) => ReactElement;
+  render: (value: any, onClick?: OnClickType) => ReactElement;
 }
 
 export interface ICustomTable {
@@ -24,7 +18,8 @@ export interface ICustomTable {
   onClick: OnClickType;
 }
 
-const CustomTable = ({columns, data, onClick}:ICustomTable) => {
+const CustomTable = ({ columns, data, onClick }: ICustomTable) => {
+  const keyGenData = Math.floor(Math.random() * 100);
   return (
     <div>
       <table>
@@ -32,36 +27,35 @@ const CustomTable = ({columns, data, onClick}:ICustomTable) => {
           <tr>
             {columns.map((column) => {
               return (
-                <th key={`heading_${column.id}`}>
-                  {(column.sortable && column.renderSortable) ? (
+                <th key={`heading-${keyGenData}-${column.id}`}>
+                  {column.sortable && column.renderSortable ? (
                     <>{column.renderSortable(column, onClick)}</>
                   ) : (
                     <span>{column.label}</span>
                   )}
-
                 </th>
-              )
+              );
             })}
           </tr>
         </thead>
         <tbody>
-          {data.map((item,index) => {
+          {data.map((item, index) => {
             return (
-              <tr key={`row_${index}`}>
+              <tr key={`row-${keyGenData}-${index}`}>
                 {columns.map((column) => {
                   return (
-                    <td key={`col_${column.id}`}>
-                       {column.render(item, onClick)}
+                    <td key={`col-${keyGenData}-${column.id}`}>
+                      {column.render(item, onClick)}
                     </td>
-                  )
+                  );
                 })}
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default CustomTable
+export default CustomTable;

@@ -1,8 +1,12 @@
 import Link from "next/link";
-import Image from 'next/future/image';
-import { ICustomTableColumn, OnClickType } from "../components/CustomTable/CustomTable";
+import Image from "next/future/image";
+import {
+  ICustomTableColumn,
+  OnClickType,
+} from "../components/CustomTable/CustomTable";
 import { formatCustomDate, formatDollar } from "./format";
 import { FaCartPlus, FaPencilAlt, FaTrash } from "react-icons/fa";
+import CustomPopup from "../components/CustomPopup/CustomPopup";
 
 export enum OnClickButton {
   ADD_TO_CART = "add_to_cart",
@@ -45,13 +49,16 @@ export const ProductTableColumns: ICustomTableColumn[] = [
     renderSortable: (column: any, onClick?: OnClickType) => (
       <>
         <button
-          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_TITLE, column.id)}
+          onClick={() =>
+            onClick && onClick(OnClickButton.ORDER_BY_TITLE, column.id)
+          }
           className=""
         >
-          {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
+          {column.label}
+          <span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
         </button>
       </>
-    )
+    ),
   },
   {
     id: "product_price",
@@ -61,13 +68,16 @@ export const ProductTableColumns: ICustomTableColumn[] = [
     renderSortable: (column: any, onClick?: OnClickType) => (
       <>
         <button
-          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_PRICE, column.id)}
+          onClick={() =>
+            onClick && onClick(OnClickButton.ORDER_BY_PRICE, column.id)
+          }
           className=""
         >
-          {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
+          {column.label}
+          <span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
         </button>
       </>
-    )
+    ),
   },
   {
     id: "product_date",
@@ -77,13 +87,16 @@ export const ProductTableColumns: ICustomTableColumn[] = [
     renderSortable: (column: any, onClick?: OnClickType) => (
       <>
         <button
-          onClick={() => onClick && onClick(OnClickButton.ORDER_BY_DATE, column.id)}
+          onClick={() =>
+            onClick && onClick(OnClickButton.ORDER_BY_DATE, column.id)
+          }
           className=""
         >
-          {column.label}<span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
+          {column.label}
+          <span dangerouslySetInnerHTML={{ __html: column.arrowAsc }} />
         </button>
       </>
-    )
+    ),
   },
   {
     id: "product_action",
@@ -98,19 +111,31 @@ export const ProductTableColumns: ICustomTableColumn[] = [
         </button>
 
         <button
-          onClick={() => onClick && onClick(OnClickButton.EDIT_PRODUCT, product)}
+          onClick={() =>
+            onClick && onClick(OnClickButton.EDIT_PRODUCT, product)
+          }
           className=""
         >
           <FaPencilAlt />
         </button>
 
-        <button
-          onClick={() => onClick && onClick(OnClickButton.DELETE_PRODUCT, product)}
+        {/* <button
+          onClick={() =>
+            onClick && onClick(OnClickButton.DELETE_PRODUCT, product)
+          }
           className=""
         >
           <FaTrash />
-        </button>
-
+        </button> */}
+        <CustomPopup
+          button={<FaTrash />}
+          isOpen={false}
+          onConfirm={() =>
+            onClick && onClick(OnClickButton.DELETE_PRODUCT, product)
+          }
+        >
+          <div>Delete product {product.title}</div>
+        </CustomPopup>
       </>
     ),
   },
