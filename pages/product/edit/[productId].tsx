@@ -2,32 +2,34 @@ import router from "next/router";
 import React, { useState } from "react";
 // import httpClient from "../../../api/httpClient";
 import CustomCurrencyInput from "../../../components/CustomCurrencyInput/CustomCurrencyInput";
-import Image from 'next/future/image';
+import Image from "next/future/image";
 import Link from "next/link";
 import CustomEditor from "../../../components/CustomEditor/CustomEditor";
 import productApi from "../../../api/productApi";
 
 const ProductEdit = (props: any) => {
-  const {productId, data} = props;
-  const handleType = productId != 0 ? 'update' : 'create';
-  const [titleF, setTitleF] = useState(data?.title ? data.title : '');
-  const [priceF, setPriceF] = useState(data?.price ? data.price : '');
-  const thumbUrlF = data?.thumb ? data.thumb : '';
-  const [thumbF, setThumbF] = useState<any>('');
-  const [descriptionF, setDescriptionF] = useState(data?.description ? data.description : '');
+  const { productId, data } = props;
+  const handleType = productId != 0 ? "update" : "create";
+  const [titleF, setTitleF] = useState(data?.title ? data.title : "");
+  const [priceF, setPriceF] = useState(data?.price ? data.price : "");
+  const thumbUrlF = data?.thumb ? data.thumb : "";
+  const [thumbF, setThumbF] = useState<any>("");
+  const [descriptionF, setDescriptionF] = useState(
+    data?.description ? data.description : ""
+  );
 
   const handleSubmit = (e: any) => {
     // console.log({title, price , thumb, description});
     const formData = new FormData();
-    formData.append('title', titleF);
-    formData.append('price', priceF);
-    if(thumbF) {
-      formData.append('thumb', thumbF);
+    formData.append("title", titleF);
+    formData.append("price", priceF);
+    if (thumbF) {
+      formData.append("thumb", thumbF);
     }
-    formData.append('description', descriptionF);
+    formData.append("description", descriptionF);
 
-    switch(handleType) {
-      case 'create':
+    switch (handleType) {
+      case "create":
         productApi.create(formData);
         // httpClient.post(`/product`, formData)
         //   .then(res => {
@@ -36,7 +38,7 @@ const ProductEdit = (props: any) => {
         //     router.push(`/product/edit/${res.data.data.productId}`)
         //   });
         break;
-      case 'update':
+      case "update":
         productApi.update(productId, formData);
         // httpClient.put(`/product/${productId}`, formData)
         //   .then(res => {
@@ -45,18 +47,17 @@ const ProductEdit = (props: any) => {
         //   });
         break;
     }
-
   };
 
   const handleDelete = () => {
     productApi.delete(productId);
-  }
+  };
 
   const onThumbnailChange = (e: any) => {
     if (e.target.files && e.target.files[0]) {
       setThumbF(e.target.files[0]);
     }
-  }
+  };
 
   return (
     <div className="product-edit container mx-auto">
@@ -81,14 +82,14 @@ const ProductEdit = (props: any) => {
       </div>
       <div className="my-2">
         <label className="block">Product Thumbnail:</label>
-        {thumbUrlF &&
+        {thumbUrlF && (
           <div className="w-3/12">
-             <Image
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${thumbUrlF}`}
-                alt={`image ${titleF}`}
-              />
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${thumbUrlF}`}
+              alt={`image ${titleF}`}
+            />
           </div>
-        }
+        )}
         <input
           type="file"
           accept=".jpg, .jpeg, .png"
@@ -103,20 +104,14 @@ const ProductEdit = (props: any) => {
           value={descriptionF}
           onChange={(e) => setDescriptionF(e.target.value)}
         /> */}
-        <CustomEditor onChange={setDescriptionF}/>
+        <CustomEditor onChange={setDescriptionF} />
       </div>
       <div className="my-4">
-        <button
-          className="btn mr-2"
-          onClick={(e) => handleSubmit(e)}
-        >
+        <button className="btn mr-2" onClick={(e) => handleSubmit(e)}>
           {handleType} Product
         </button>
         {handleType == "update" && (
-          <button
-            className="btn"
-            onClick={handleDelete}
-          >
+          <button className="btn" onClick={handleDelete}>
             Delete Product
           </button>
         )}
@@ -128,19 +123,19 @@ const ProductEdit = (props: any) => {
   );
 };
 
-export async function getServerSideProps({params}: {params: any}) {
+export async function getServerSideProps({ params }: { params: any }) {
   const productId = params?.productId;
-  let dataPayload:any = [];
+  let dataPayload: any = [];
 
   if (productId != 0) {
     dataPayload = await productApi.get(productId);
 
-    if(!dataPayload?.data?.data) {
+    if (!dataPayload?.data?.data) {
       return {
         redirect: {
           permanent: false,
           destination: "/product",
-        }
+        },
       };
     }
   }
@@ -150,7 +145,7 @@ export async function getServerSideProps({params}: {params: any}) {
       data: dataPayload?.data?.data ? dataPayload?.data?.data : dataPayload,
       productId: productId,
     }, // will be passed to the page component as props
-  }
+  };
 }
 
 export default ProductEdit;
